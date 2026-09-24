@@ -1,8 +1,6 @@
 # vivaldi-shim
 
-This is a macOS shim I use with Finicky to *ensure* external links load in Vivaldi (for raindrop.io, CLI authentication, etc.)
-
-## Changes to Vivaldi behavior[^1]
+This is a macOS shim I use with Finicky to *ensure* external links load in Vivaldi[^1] (for raindrop.io, CLI authentication, etc.)
 
 | When Vivaldi is… | An external link.. | With the shim.. |
 | --- | --- | --- |
@@ -12,15 +10,11 @@ This is a macOS shim I use with Finicky to *ensure* external links load in Vival
 
 [^1]: as of 8.2.4133.76 on macOS 15.7.1 with `session.restore_on_startup` unset, exact behavior will vary with configuration.
 
-## Build and install
-
 Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13
 
 ```sh
  ./scripts/build-shim.sh
 ```
-
-## Configuration
 
 In my `.finicky.js` I've replaced `"Vivaldi"` with..
 
