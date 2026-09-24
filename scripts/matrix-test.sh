@@ -2,10 +2,15 @@
 #
 # matrix-test.sh - Determine exactly when Vivaldi loads a URL handed to it on macOS.
 #
-# Tests three dispatch paths against three Vivaldi states. Each trial normalizes
+# Tests four dispatch paths against three Vivaldi states. Each trial normalizes
 # Vivaldi into the intended state, ASSERTS that state immediately before handing
 # over the URL, and aborts the trial if the assertion fails - so a browser touched
 # mid-run produces a SKIP, never a bogus PASS.
+#
+# Two paths address Vivaldi directly and serve as controls: 'open -a' reproduces
+# the bug when Vivaldi is running with no windows, 'exec' does not. The other two
+# go through the shim - 'shim' targets it explicitly, 'bare' reaches it as the
+# system default handler, and both are expected to load in every state.
 #
 # Full before/after tab lists go to the log file for auditing.
 #
@@ -18,6 +23,8 @@
 set -uo pipefail
 
 VIVALDI_BIN="/Applications/Vivaldi.app/Contents/MacOS/Vivaldi"
+SHIM_NAME="VivaldiShim"
+PATHS="bare open-a exec shim"
 TRIALS="${1:-2}"
 LOG="$(dirname "$0")/matrix-test.log"
 RESULTS="$(mktemp)"
@@ -103,6 +110,7 @@ dispatch() {
     bare)   open "$2" ;;
     open-a) open -a Vivaldi "$2" ;;
     exec)   "$VIVALDI_BIN" "$2" >/dev/null 2>&1 & ;;
+    shim)   open -a "$SHIM_NAME" "$2" ;;
   esac
 }
 
@@ -150,10 +158,10 @@ summarize() {
   echo
   echo "RESULTS ($TRIALS trials per combination)"
   echo
-  printf '%-22s %-10s %-10s %s\n' "STATE" "bare" "open -a" "exec"
+  printf '%-22s %-10s %-10s %-10s %s\n' "STATE" "bare" "open -a" "exec" "shim"
   for state in cold nowin win; do
     local row=""
-    for path in bare open-a exec; do
+    for path in $PATHS; do
       local outcomes
       outcomes="$(grep "^$state|$path|" "$RESULTS" | cut -d'|' -f3 | sort -u | paste -sd, -)"
       [ -z "$outcomes" ] && outcomes="-"
@@ -176,10 +184,12 @@ state_label() {
 main() {
   echo "Testing Vivaldi URL dispatch. Do not touch the browser while this runs."
   echo "Trials per combination: $TRIALS"
+  echo "The 'bare' path follows the system default handler, so it only exercises"
+  echo "the shim while the default chain points at it."
   echo
 
   for state in cold nowin win; do
-    for path in bare open-a exec; do
+    for path in $PATHS; do
       for trial in $(seq 1 "$TRIALS"); do
         printf '  %-20s %-8s trial %s ... ' "$(state_label "$state")" "$path" "$trial"
         run_trial "$state" "$path" "$trial"
@@ -189,6 +199,11 @@ main() {
   done
 
   summarize
+
+  local stray
+  stray="$(pgrep -x "$SHIM_NAME")"
+  [ -n "$stray" ] && echo "WARNING: $SHIM_NAME still resident (pid $stray)"
+
   rm -f "$RESULTS"
 }
 
