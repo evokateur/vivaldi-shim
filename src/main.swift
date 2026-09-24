@@ -1,7 +1,10 @@
 import AppKit
 
-/// Phase 1 skeleton: records the URLs LaunchServices hands over.
-/// Dispatch to Vivaldi is not implemented yet.
+/// Receives http and https URLs from LaunchServices and hands them to Vivaldi
+/// over a path that loads them in every Vivaldi state, including the
+/// running-with-no-windows case that LaunchServices drops.
+
+let vivaldiBundleID = "com.vivaldi.Vivaldi"
 
 let logFile = FileManager.default.homeDirectoryForCurrentUser
     .appendingPathComponent("Library/Logs/VivaldiShim.log")
@@ -31,6 +34,50 @@ func record(_ message: String) {
     try? handle.write(contentsOf: line)
 }
 
+func vivaldiIsRunning() -> Bool {
+    !NSRunningApplication.runningApplications(withBundleIdentifier: vivaldiBundleID).isEmpty
+}
+
+/// Vivaldi's own binary relays the URL through Chromium's singleton socket,
+/// which loads it even when Vivaldi has no open windows.
+func relay(_ urls: [URL], to bundleURL: URL) {
+    guard let executable = Bundle(url: bundleURL)?.executableURL else {
+        record("no executable inside \(bundleURL.path)")
+        return
+    }
+    let vivaldi = Process()
+    vivaldi.executableURL = executable
+    vivaldi.arguments = urls.map(\.absoluteString)
+    do {
+        try vivaldi.run()
+        record("relayed to running Vivaldi")
+    } catch {
+        record("relay failed: \(error.localizedDescription)")
+    }
+}
+
+/// A cold start goes through LaunchServices, which loads the URL correctly and
+/// leaves Vivaldi owned by launchd rather than parented to the shim.
+func coldLaunch(_ urls: [URL], at bundleURL: URL) {
+    NSWorkspace.shared.open(urls,
+                            withApplicationAt: bundleURL,
+                            configuration: NSWorkspace.OpenConfiguration())
+    record("cold launched Vivaldi")
+}
+
+func dispatch(_ urls: [URL]) {
+    guard let bundleURL = NSWorkspace.shared
+        .urlForApplication(withBundleIdentifier: vivaldiBundleID) else {
+        record("Vivaldi is not installed")
+        return
+    }
+    if vivaldiIsRunning() {
+        relay(urls, to: bundleURL)
+    } else {
+        coldLaunch(urls, at: bundleURL)
+    }
+}
+
 final class ShimDelegate: NSObject, NSApplicationDelegate {
     /// LaunchServices delivers one GURL Apple event per URL. The shim handles
     /// each one and exits after `exitDelay`, leaving no resident process.
@@ -38,6 +85,7 @@ final class ShimDelegate: NSObject, NSApplicationDelegate {
         for url in urls {
             record("received \(url.absoluteString)")
         }
+        dispatch(urls)
         DispatchQueue.main.asyncAfter(deadline: .now() + exitDelay) {
             NSApp.terminate(nil)
         }
