@@ -34,12 +34,11 @@ func record(_ message: String) {
     try? handle.write(contentsOf: line)
 }
 
-func vivaldiIsRunning() -> Bool {
-    !NSRunningApplication.runningApplications(withBundleIdentifier: vivaldiBundleID).isEmpty
-}
-
-/// Vivaldi's own binary relays the URL through Chromium's singleton socket,
-/// which loads it even when Vivaldi has no open windows.
+/// Runs Vivaldi's own binary with the URLs as arguments. When Vivaldi is already
+/// running, Chromium's process singleton hands them to that instance and this
+/// process exits; when it is not, this process becomes the browser. Either way
+/// the URLs arrive through command-line startup handling, which opens a window
+/// when there is none - the case the LaunchServices path drops.
 func relay(_ urls: [URL], to bundleURL: URL) {
     guard let executable = Bundle(url: bundleURL)?.executableURL else {
         record("no executable inside \(bundleURL.path)")
@@ -50,19 +49,10 @@ func relay(_ urls: [URL], to bundleURL: URL) {
     vivaldi.arguments = urls.map(\.absoluteString)
     do {
         try vivaldi.run()
-        record("relayed to running Vivaldi")
+        record("relayed to Vivaldi")
     } catch {
         record("relay failed: \(error.localizedDescription)")
     }
-}
-
-/// A cold start goes through LaunchServices, which loads the URL correctly and
-/// leaves Vivaldi owned by launchd rather than parented to the shim.
-func coldLaunch(_ urls: [URL], at bundleURL: URL) {
-    NSWorkspace.shared.open(urls,
-                            withApplicationAt: bundleURL,
-                            configuration: NSWorkspace.OpenConfiguration())
-    record("cold launched Vivaldi")
 }
 
 func dispatch(_ urls: [URL]) {
@@ -71,11 +61,7 @@ func dispatch(_ urls: [URL]) {
         record("Vivaldi is not installed")
         return
     }
-    if vivaldiIsRunning() {
-        relay(urls, to: bundleURL)
-    } else {
-        coldLaunch(urls, at: bundleURL)
-    }
+    relay(urls, to: bundleURL)
 }
 
 final class ShimDelegate: NSObject, NSApplicationDelegate {
