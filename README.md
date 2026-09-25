@@ -2,13 +2,13 @@
 
 This is a macOS shim I use with Finicky to *ensure* external links load in Vivaldi (for raindrop.io, CLI authentication, etc.)
 
-The behavior it changes[^1]:
+The behavior it changes:[^1]
 
-| When Vivaldi is… | An external link.. | With the shim.. |
+| When Vivaldi is… | an external link.. | With the shim it.. |
 | --- | --- | --- |
-| not running | opens in a new tab in a window with the start tab | opens in a window with a single tab |
-| running, no windows open | **does not open** - only a new window with the start tab | opens in a window with a single tab |
-| running, window open | opens in a new tab in already open window | opens in a new tab in already open window |
+| not running | opens in a tab alongside new window tab(s) | opens in a window with a single tab |
+| running, no windows open | **does not open** (in the new window) | opens in a window with a single tab |
+| running, window open | opens in a tab added to an open window | opens in a tab added to an open window |
 
 [^1]: as of 8.2.4133.76 on macOS 15.7.1 with `session.restore_on_startup` unset, exact behavior will vary with configuration.
 
