@@ -32,7 +32,9 @@ export default {
 ...
 ```
 
-`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings. If you need that:
+`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings. 
+
+If you need that:
 
 ```sh
 brew install duti
