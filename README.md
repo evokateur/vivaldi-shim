@@ -12,7 +12,9 @@ The behavior it changes:[^1]
 
 [^1]: as of 8.2.4133.76 on macOS 15.7.1 with `session.restore_on_startup` unset, exact behavior will vary with configuration.
 
-Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13
+Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+
+
+To build and install `VivaldiShim.app`:
 
 ```sh
  ./scripts/build-shim.sh
@@ -30,7 +32,7 @@ export default {
 ...
 ```
 
-This is not set up to be a default browser candidate in macOS settings. If you need that:
+`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings. If you need that:
 
 ```sh
 brew install duti
