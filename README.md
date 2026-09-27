@@ -2,7 +2,7 @@
 
 This is a macOS shim I use with Finicky to *ensure* external links load in Vivaldi (for raindrop.io, CLI authentication, etc.)
 
-Configured as the default browser, the shim supersedes Vivaldi's (apparently) wonky Apple event handler, sending the URL as an argument to the Vivaldi executable and letting Chromium handle the behavior.[^1]
+As the default browser, the shim supersedes Vivaldi's (apparently) wonky Apple event handler, sending the URL as an argument to the Vivaldi executable and letting Chromium handle the behavior.[^1]
 
 The behavior it changes:[^2]
 
