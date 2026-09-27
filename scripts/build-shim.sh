@@ -7,6 +7,7 @@
 #
 # Usage:
 #   ./build-shim.sh
+#   ./build-shim.sh --build-only
 
 set -euo pipefail
 
@@ -77,9 +78,17 @@ install_bundle() {
 }
 
 main() {
+  case "$*" in
+    ''|--build-only) ;;
+    *) echo "Usage: $0 [--build-only]" >&2; exit 1 ;;
+  esac
   assemble
-  install_bundle
-  echo "Installed $INSTALLED"
+  if [ "$#" -eq 0 ]; then
+    install_bundle
+    echo "Installed $INSTALLED"
+  else
+    echo "Built $APP"
+  fi
 }
 
-main
+main "$@"
