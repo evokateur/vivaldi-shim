@@ -2,7 +2,7 @@
 
 This is a macOS shim I use with Finicky to *ensure* external links load in Vivaldi (for raindrop.io, CLI authentication, etc.)
 
-Configured as the default browser, the shim supersedes Vivaldi's (apparently) wonky Apple event handler, sending the URL directly to the Vivaldi executable and letting Chromium handle the behavior.
+Configured as the default browser, the shim supersedes Vivaldi's (apparently) wonky Apple event handler, sending the URL as an argument to the Vivaldi executable and letting Chromium handle the behavior. If the shim is launched without a URL it opens or activates Vivaldi then quits.
 
 The behavior it changes:[^1]
 
@@ -35,7 +35,7 @@ export default {
 ...
 ```
 
-`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings. 
+`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings.
 
 If you need that:
 
