@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# build-shim.sh - Build, sign, and install VivaldiShim.app.
+# build-shim.sh - Build, sign, and install Vivaldi Shim.app.
 #
 # Compiles the Swift source, assembles the bundle, signs it ad-hoc, installs it
 # to /Applications, and registers it with LaunchServices.
@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-APP_NAME="VivaldiShim"
+APP_NAME="Vivaldi Shim"
 BUNDLE_ID="net.evokateur.vivaldi-shim"
 VERSION="0.1.0"
 
@@ -22,8 +22,9 @@ LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchS
 
 assemble() {
   rm -rf "$APP"
-  mkdir -p "$APP/Contents/MacOS"
+  mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
   swiftc -O -o "$APP/Contents/MacOS/$APP_NAME" "$ROOT/src/main.swift"
+  cp "$ROOT/assets/peek.icns" "$APP/Contents/Resources/app.icns"
   write_plist
   codesign --force --sign - "$APP"
 }
@@ -38,6 +39,8 @@ write_plist() {
   <string>$APP_NAME</string>
   <key>CFBundleIdentifier</key>
   <string>$BUNDLE_ID</string>
+  <key>CFBundleIconFile</key>
+  <string>app.icns</string>
   <key>CFBundleName</key>
   <string>$APP_NAME</string>
   <key>CFBundlePackageType</key>

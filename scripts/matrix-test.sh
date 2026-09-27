@@ -23,7 +23,7 @@
 set -uo pipefail
 
 VIVALDI_BIN="/Applications/Vivaldi.app/Contents/MacOS/Vivaldi"
-SHIM_NAME="VivaldiShim"
+SHIM_NAME="Vivaldi Shim"
 PATHS="bare open-a exec shim"
 TRIALS="${1:-2}"
 LOG="$(dirname "$0")/matrix-test.log"
