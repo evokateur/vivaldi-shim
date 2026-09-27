@@ -4,8 +4,6 @@ This is a macOS shim I use with Finicky to *ensure* external links load in Vival
 
 Configured as the default browser, the shim supersedes Vivaldi's (apparently) wonky Apple event handler, sending the URL directly to the Vivaldi executable and letting Chromium handle the behavior.
 
-Launching the shim without a URL (for example, from Spotlight) opens or activates Vivaldi through `NSWorkspace.openApplication`, then quits the shim.
-
 The behavior it changes:[^1]
 
 | When Vivaldi is… | an external link.. | With the shim it.. |
@@ -19,20 +17,17 @@ The behavior it changes:[^1]
 
 Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+
 
-To build and install `Vivaldi Shim.app`:
+To build and install `VivaldiShim.app`:
 
 ```sh
  ./scripts/build-shim.sh
 ```
 
-The build copies `assets/peek.icns` to `Contents/Resources/app.icns` inside
-the bundle. Replace the bundled `app.icns` to try a different icon after building.
-
 In my `.finicky.js` I've replaced `"Vivaldi"` with..
 
 ```js
 export default {
-  defaultBrowser: "Vivaldi Shim",
+  defaultBrowser: "VivaldiShim",
   handlers: [
     {
       match: /youtube\.com/,
@@ -40,7 +35,7 @@ export default {
 ...
 ```
 
-`Vivaldi Shim.app` is not set up to be a default browser candidate in macOS settings.
+`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings. 
 
 If you need that:
 
