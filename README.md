@@ -13,7 +13,7 @@ The behavior it changes:[^2]
 | running, window open | opens in a tab added to an open window | opens in a tab added to an open window |
 
 [^1]: if launched without a URL the shim opens or activates Vivaldi then quits.
-[^2]: as of 8.2.4133.76 on macOS 15.7.1 with `session.restore_on_startup` unset, exact behavior might vary with configuration.
+[^2]: as of 8.2.4133.76 on macOS 15.7.1 with `session.restore_on_startup` unset, exact behavior should vary with configuration.
 [^3]: i.e. as it is most of the time
 
 Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+
