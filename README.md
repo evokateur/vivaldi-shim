@@ -1,4 +1,4 @@
-# vivaldi-shim
+# Vivaldi Shim
 
 This is a macOS shim I use with Finicky to *ensure* external links load in Vivaldi (for raindrop.io, CLI authentication, etc.)
 
@@ -18,7 +18,7 @@ The behavior it changes:[^2]
 
 Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+
 
-To build and install `VivaldiShim.app`:
+To build and install `Vivaldi Shim.app`:
 
 ```sh
  ./scripts/build-shim.sh
@@ -28,7 +28,7 @@ In my `.finicky.js` I've replaced `"Vivaldi"` with..
 
 ```js
 export default {
-  defaultBrowser: "VivaldiShim",
+  defaultBrowser: "Vivaldi Shim",
   handlers: [
     {
       match: /youtube\.com/,
@@ -36,7 +36,7 @@ export default {
 ...
 ```
 
-`VivaldiShim.app` is not set up to be a default browser candidate in macOS settings.
+`Vivaldi Shim.app` is not set up to be a default browser candidate in macOS settings.
 
 If you need that:
 
