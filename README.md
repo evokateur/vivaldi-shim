@@ -4,6 +4,8 @@ This is a macOS shim I use with Finicky to *ensure* external links load in Vival
 
 Configured as the default browser, the shim supersedes Vivaldi's (apparently) wonky Apple event handler, sending the URL directly to the Vivaldi executable and letting Chromium handle the behavior.
 
+Launching the shim without a URL (for example, from Spotlight) opens or activates Vivaldi through `NSWorkspace.openApplication`, then quits the shim.
+
 The behavior it changes:[^1]
 
 | When Vivaldi is… | an external link.. | With the shim it.. |

@@ -64,7 +64,38 @@ func dispatch(_ urls: [URL]) {
     relay(urls, to: bundleURL)
 }
 
+/// Leaves time for closely-following events before terminating the shim.
+func scheduleExit() {
+    DispatchQueue.main.asyncAfter(deadline: .now() + exitDelay) {
+        NSApp.terminate(nil)
+    }
+}
+
 final class ShimDelegate: NSObject, NSApplicationDelegate {
+    /// Opens Vivaldi normally when launched without a URL, then exits.
+    func applicationOpenUntitledFile(_ sender: NSApplication) -> Bool {
+        record("received plain launch")
+        guard let bundleURL = NSWorkspace.shared
+            .urlForApplication(withBundleIdentifier: vivaldiBundleID) else {
+            record("Vivaldi is not installed")
+            scheduleExit()
+            return false
+        }
+        NSWorkspace.shared.openApplication(
+            at: bundleURL, configuration: NSWorkspace.OpenConfiguration()
+        ) { _, error in
+            DispatchQueue.main.async {
+                if let error {
+                    record("open failed: \(error.localizedDescription)")
+                } else {
+                    record("opened Vivaldi")
+                }
+                scheduleExit()
+            }
+        }
+        return true
+    }
+
     /// LaunchServices delivers one GURL Apple event per URL. The shim handles
     /// each one and exits after `exitDelay`, leaving no resident process.
     func application(_ application: NSApplication, open urls: [URL]) {
@@ -72,9 +103,7 @@ final class ShimDelegate: NSObject, NSApplicationDelegate {
             record("received \(url.absoluteString)")
         }
         dispatch(urls)
-        DispatchQueue.main.asyncAfter(deadline: .now() + exitDelay) {
-            NSApp.terminate(nil)
-        }
+        scheduleExit()
     }
 }
 
