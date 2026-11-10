@@ -47,7 +47,7 @@ export default {
 
 `Vivaldi Shim.app` is not set up to be a default browser candidate in macOS settings.
 
-If it needs to be the default browser, you can use `duti` to set it directly:
+If it needs to be the default, you can use `duti` to set it directly:
 
 ```sh
 brew install duti
