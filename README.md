@@ -4,6 +4,8 @@ This is a macOS shim I ginned up to ensure external links loaded in Vivaldi (for
 
 As the default browser, it bypasses Vivaldi's URL Apple event handler, sending the URL as an argument to the Vivaldi executable and letting Chromium handle the behavior.
 
+Since the no-window URL delivery failure no longer reproduces, the shim's remaining benefit is avoiding unneeded Start Page tabs
+
 **Original behavior — Vivaldi 8.2.4133.76 on macOS 15.7.1**, using **Startup with → Homepage**, Homepage set to **Start Page**:
 
 | Vivaldi state | Without the shim | With the shim |
@@ -20,10 +22,8 @@ As the default browser, it bypasses Vivaldi's URL Apple event handler, sending t
 | Running, no windows open | Opens a window with the URL tab followed by Speed Dial | Opens a window containing only the URL |
 | Running, window open | Adds the URL to an existing window | Adds the URL to an existing window |
 
-Since the no-window URL delivery failure no longer reproduces, the shim's remaining benefit is avoiding unneeded Start Page tabs
-
-> [!IMPORTANT]
-> Avoid using this with **Startup with → Last Session**. Launching the Vivaldi executable seems to trigger a restore of the last *persisted* session, possibly windows and tabs open when Vivaldi was last quit.
+> [!NOTE]
+> Using **Startup with → Last Session**, calling the Vivaldi executable directly seems to trigger a restore of the last *persisted* session, possibly windows and tabs open when Vivaldi was last quit.
 
 Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+
 
