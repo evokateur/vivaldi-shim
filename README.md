@@ -2,7 +2,7 @@
 
 This is a macOS shim I ginned up to ensure external links loaded in Vivaldi (for raindrop.io, CLI authentication, etc.)
 
-As the default browser, it bypasses Vivaldi's URL Apple event handler, sending the URL as an argument to the Vivaldi executable and letting Chromium handle the behavior.
+As the default browser it bypasses Vivaldi's URL Apple event handler, sending the URL as an argument to the Vivaldi executable and letting Chromium handle the behavior.
 
 Since the no-window URL delivery failure no longer reproduces, the shim's remaining benefit is avoiding unneeded Start Page tabs
 
