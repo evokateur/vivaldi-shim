@@ -111,7 +111,7 @@ test_url() {
 
 main() {
   "$ROOT/scripts/build-shim.sh" --build-only
-  printf 'This test quits Vivaldi and closes all its windows. Save work first.\n'
+  printf 'Quitting Vivaldi after closing all its windows..\n'
   printf 'Do not touch Vivaldi during the run.\n'
   local browser state trial=0
   for browser in Vivaldi "$SHIM"; do
